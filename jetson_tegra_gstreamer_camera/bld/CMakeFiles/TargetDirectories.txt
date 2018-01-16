@@ -1,0 +1,7 @@
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/install/strip.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/install/local.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/jetson_tegra_gstreamer_camera.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/rebuild_cache.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/edit_cache.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/install.dir
+/home/nvidia/opencv_dnn_detect/jetson_tegra_gstreamer_camera/bld/CMakeFiles/list_install_components.dir

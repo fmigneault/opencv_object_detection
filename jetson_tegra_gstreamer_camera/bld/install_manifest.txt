@@ -1,0 +1,1 @@
+/home/nvidia/opencv_dnn_detect/install/bin/jetson_tegra_gstreamer_camera
