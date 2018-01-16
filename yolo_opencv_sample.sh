@@ -1,8 +1,9 @@
-install_dir=/home/nvidia/opencv_dnn_detect/install/bin
-input_path=/home/nvidia/opencv/samples/data/vtest.avi
-input_path=/home/nvidia/opencv/samples/data/Megamind.avi
-label_path=/home/nvidia/models/labels/voc.names
-models_dir=/home/nvidia/models
+base_dir=$(pwd)
+install_dir=$base_dir/install/bin
+input_path=$base_dir/../opencv/samples/data/vtest.avi
+#input_path=$base_dir/../opencv/samples/data/Megamind.avi
+label_path=$base_dir/../models/labels/voc.names
+models_dir=$base_dir/../models
 #model=yolo-608x608
 #model_input_size=608
 #model=yolo-voc
@@ -10,7 +11,7 @@ models_dir=/home/nvidia/models
 #model=yolo-voc-288x288
 #model_input_size=288
 model=tiny-yolo-voc
-#model_input_size=416
+model_input_size=416
 
 model_input_size=416
 scale_factor=1
