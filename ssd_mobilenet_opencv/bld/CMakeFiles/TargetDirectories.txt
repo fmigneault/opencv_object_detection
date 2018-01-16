@@ -1,7 +1,0 @@
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/install/strip.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/install/local.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/ssd_mobilenet_object_detection.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/install.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/list_install_components.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/edit_cache.dir
-/home/nvidia/opencv_dnn_detect/ssd_mobilenet_opencv/bld/CMakeFiles/rebuild_cache.dir

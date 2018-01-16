@@ -1,7 +1,8 @@
-ssd_mobilenet_path=/home/nvidia/opencv_dnn_detect/install/bin/ssd_mobilenet_object_detection
-ssd_mobilenet_eval="/home/nvidia/opencv/samples/data/vtest.avi"
+base_dir=$(pwd)
+ssd_mobilenet_path=$base_dir/install/bin/ssd_mobilenet_object_detection
+ssd_mobilenet_eval="$base_dir/../opencv/samples/data/vtest.avi"
 model_name=MobileNetSSD_deploy
-models_dir=/home/nvidia/models
+models_dir=$base_dir/../models
 model_proto=$models_dir/$model_name.prototxt
 model_caffe=$models_dir/$model_name.caffemodel
 scale_factor=1
