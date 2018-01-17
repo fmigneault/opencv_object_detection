@@ -1,5 +1,5 @@
 #========================================
-# OpenCV's SSD_Mobilenet sample (CV_SSD_Mobilenet)
+# OpenCV's Mobilenet-SSD sample (CV_SSD_Mobilenet)
 #========================================
 
 cmake_minimum_required(VERSION 2.8)
