@@ -33,7 +33,8 @@ static const char* params =
 "{ style          | box   | box or line style draw }"
 "{ min_confidence | 0.24  | min confidence      }"
 "{ class_names    |       | File with class names, [PATH-TO-DARKNET]/data/coco.names }"
-"{ scale_factor   | 1.0   | pre-scaling of video/images }";
+"{ scale_factor   | 1.0   | pre-scaling of video/images }"
+"{ time           | 1     | output operation timings }";
 
 int main(int argc, char** argv)
 {
@@ -114,9 +115,13 @@ int main(int argc, char** argv)
 
     Mat frame, frame_resize;
     int64 t0, t1, t2, t3, t4;
+    int output_time = parser.get<int>("time");
+    
     for(;;)
     {    
-        t0 = getTickCount();
+        if (output_time)
+            t0 = getTickCount();
+            
         cap >> frame; // get a new frame from camera/video or read image
 
         if (frame.empty())
@@ -133,11 +138,13 @@ int main(int argc, char** argv)
         // [Prepare blob] - Convert Mat to batch of images + [Set input blob] - set the network input
         Mat inputBlob = blobFromImage(frame, 1 / 255.F, model_input_size, Scalar(), true, false);
         net.setInput(inputBlob, "data");
-        t1 = getTickCount();
+        if (output_time)
+            t1 = getTickCount();
 
         // [Make forward pass] - compute output
         Mat detectionMat = net.forward("detection_out");
-        t2 = getTickCount();
+        if (output_time)
+            t2 = getTickCount();
 
         vector<double> layersTimings;
         double tick_freq = getTickFrequency();
@@ -147,8 +154,10 @@ int main(int argc, char** argv)
         int frame_h = frame.size().height;
         putText(frame, format("FPS: %.2f ; time: %.2f ms ; %ix%i", 1000.f / time_ms, time_ms, frame_w, frame_h),
                 Point(20, 20), 0, 0.5, Scalar(0, 0, 255));
-
-        t3 = getTickCount();
+        
+        if (output_time)
+            t3 = getTickCount();
+            
         float confidenceThreshold = parser.get<float>("min_confidence");
         for (int i = 0; i < detectionMat.rows; i++)
         {
@@ -193,12 +202,16 @@ int main(int argc, char** argv)
                         FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0,0,0));
             }
         }
-        t4 = getTickCount();
-        cout << "===timing=== (ms)" << endl;
-        cout << "[0-1]: " << (t1 - t0) / tick_freq * 1000 << endl;
-        cout << "[1-2]: " << (t2 - t1) / tick_freq * 1000 << endl;
-        cout << "[2-3]: " << (t3 - t2) / tick_freq * 1000 << endl;
-        cout << "[3-4]: " << (t4 - t3) / tick_freq * 1000 << endl;
+        
+        if (output_time) 
+        {            
+            t4 = getTickCount();
+            cout << "===timing=== (ms)" << endl;
+            cout << "[0-1]: " << (t1 - t0) / tick_freq * 1000 << endl;
+            cout << "[1-2]: " << (t2 - t1) / tick_freq * 1000 << endl;
+            cout << "[2-3]: " << (t3 - t2) / tick_freq * 1000 << endl;
+            cout << "[3-4]: " << (t4 - t3) / tick_freq * 1000 << endl;
+        }
         
         if(writer.isOpened())
             writer.write(frame);
