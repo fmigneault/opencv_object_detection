@@ -3,6 +3,8 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
+#include <iostream>
+
 using namespace cv;
 using namespace dnn;
 
@@ -47,19 +49,24 @@ int main(int argc, char** argv)
     CV_Assert(!protoPath.empty(), !modelPath.empty(), !imagePath.empty());
 
     // Load a model.
-    Net net = readNetFromCaffe(protoPath, modelPath);
+    Net net = readNetFromCaffe(protoPath, modelPath);    
 
+    // Load and set image as input
     Mat img = imread(imagePath);
     resize(img, img, Size(kInpWidth, kInpHeight));
     Mat blob = blobFromImage(img, 1.0, Size(), Scalar(102.9801, 115.9465, 122.7717), false, false);
     Mat imInfo = (Mat_<float>(1, 3) << img.rows, img.cols, 1.6f);
-
     net.setInput(blob, "data");
-    net.setInput(imInfo, "im_info");
+    ///net.setInput(imInfo, "im_info");
 
-    // Draw detections.
+    // Detect and draw detections
+    std::cout << "=== 1 ===" << std::endl;
     Mat detections = net.forward();
+    std::cout << "=== 2 ===" << std::endl;
     const float* data = (float*)detections.data;
+    std::cout << "=== 3 ===" << std::endl;
+    std::cout << detections.total() << std::endl;
+    std::cout << "=== 4 ===" << std::endl;
     for (size_t i = 0; i < detections.total(); i += 7)
     {
         // An every detection is a vector [id, classId, confidence, left, top, right, bottom]
