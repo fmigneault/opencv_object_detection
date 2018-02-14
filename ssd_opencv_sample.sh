@@ -1,3 +1,6 @@
+# ==========
+# config options
+# ==========
 base_dir=$(pwd)
 ssd_mobilenet_path=$base_dir/install/bin/ssd_mobilenet_object_detection
 ssd_mobilenet_eval="$base_dir/../opencv/samples/data/vtest.avi"
@@ -7,9 +10,16 @@ model_proto=$models_dir/$model_name.prototxt
 model_caffe=$models_dir/$model_name.caffemodel
 scale_factor=1
 
-cmd='$ssd_mobilenet_path -video=$ssd_mobilenet_eval -model=$model_caffe -proto=$model_proto -scale_factor=$scale_factor'
+# ==========
+# command
+# ==========
+cmd='$ssd_mobilenet_path 
+    -video=$ssd_mobilenet_eval -model=$model_caffe -proto=$model_proto -scale_factor=$scale_factor'
 cmd_txt=$(eval "echo $cmd")
 
+# ==========
+# summary and call
+# ==========
 echo "path:   [$ssd_mobilenet_path]"
 echo "eval:   [$ssd_mobilenet_eval]"
 echo "scale:  [$scale_factor]"
@@ -23,5 +33,4 @@ echo "cmd:"
 echo "[$cmd_txt]"
 echo ""
 eval $cmd
-
 
