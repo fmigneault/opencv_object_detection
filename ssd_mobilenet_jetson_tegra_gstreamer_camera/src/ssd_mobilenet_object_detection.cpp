@@ -1,3 +1,5 @@
+#include "jetson_tegra_gstreamer_camera.hpp"
+
 #include <opencv2/dnn.hpp>
 #include <opencv2/dnn/shape_utils.hpp>
 #include <opencv2/imgproc.hpp>
