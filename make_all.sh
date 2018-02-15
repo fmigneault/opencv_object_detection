@@ -2,7 +2,14 @@ cur_dir=$(pwd)
 bld_dir=bld
 cmake_bld_type=Release
 cmake_install=$cur_dir/install
-programs="jetson_tegra_gstreamer_camera faster_rcnn_opencv inception_opencv ssd_mobilenet_opencv ssd_opencv yolo_opencv"
+programs="
+    jetson_tegra_gstreamer_camera 
+    faster_rcnn_opencv 
+    inception_opencv 
+    ssd_inception_opencv 
+    ssd_mobilenet_opencv 
+    ssd_opencv yolo_opencv
+"
 
 for prog in $programs
 do
