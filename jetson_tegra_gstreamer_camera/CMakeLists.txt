@@ -58,9 +58,11 @@ foreach(p LIBRARY BINARY INCLUDE CMAKE)
 endforeach()
 
 # find header/source files
-set(GJTC_SAMPLE_NAME "jetson_tegra_gstreamer_camera")
+set(GJTC_SAMPLE_NAME "test_jetson_tegra_gstreamer_camera")
 set(GJTC_HEADER_FILES "")
 set(GJTC_SOURCE_FILES ${GJTC_SOURCE_FILES} ${GJTC_SOURCES_DIRS}/${GJTC_SAMPLE_NAME}.cpp)
+set(GJTC_SOURCE_FILES ${GJTC_SOURCE_FILES} ${GJTC_SOURCES_DIRS}/jetson_tegra_gstreamer_camera.cpp)
+set(GJTC_HEADER_FILES ${GJTC_HEADER_FILES} ${GJTC_INCLUDE_DIRS}/jetson_tegra_gstreamer_camera.hpp)
 
 # GJTC configs
 set(GJTC_INCLUDE_DIR       ${GJTC_INCLUDE_DIRS})
