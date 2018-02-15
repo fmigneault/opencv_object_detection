@@ -24,7 +24,7 @@ endif()
 set(CMAKE_CONFIG_DEBUG   DEBUG)
 set(CMAKE_CONFIG_RELEASE RELEASE)
 set(CMAKE_CONFIG $<$<CONFIG:Debug>:${CMAKE_CONFIG_DEBUG}>$<$<CONFIG:Release>:${CMAKE_CONFIG_RELEASE}>)
-set(CMAKE_BUILD_TYPE     Release)
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type")
 
 # Offer the user the choice of overriding the installation directories
 set(DEFAULT_INSTALL_LIBRARY_DIR lib)

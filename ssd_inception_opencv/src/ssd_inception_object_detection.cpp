@@ -13,36 +13,30 @@ using namespace cv::dnn;
 
 const size_t inWidth = 300;
 const size_t inHeight = 300;
-const float inScaleFactor = 0.007843f;
 const float meanVal = 127.5;
-const char* classNames[] = {"background",
-                            "aeroplane", "bicycle", "bird", "boat",
-                            "bottle", "bus", "car", "cat", "chair",
-                            "cow", "diningtable", "dog", "horse",
-                            "motorbike", "person", "pottedplant",
-                            "sheep", "sofa", "train", "tvmonitor"};
 
 const char* params
-    = "{ help           | false | print usage         }"
-      "{ proto          | MobileNetSSD_deploy.prototxt | model configuration }"
-      "{ model          | MobileNetSSD_deploy.caffemodel | model weights }"
-      "{ camera_device  | 0     | camera device number }"
-      "{ video          |       | video or image for detection}"
-      "{ out            |       | path to output video file}"
-      "{ min_confidence | 0.2   | min confidence }"
-      "{ opencl         | false | enable OpenCL }"
-      "{ scale_factor   | 1.0   | pre-scaling of video/images }"
+    = "{ help           | false                                     | print usage         }"
+      "{ config         | ssd_inception_v2_coco_2017_11_17.pbtxt    | model configuration }"
+      "{ weight         | frozen_inference_graph.pb                 | model weights }"
+      "{ labels         | coco.names                                | class name labels }"
+      "{ camera_device  | 0                                         | camera device number }"
+      "{ video          |                                           | video or image for detection}"
+      "{ out            |                                           | path to output video file}"
+      "{ min_confidence | 0.2                                       | min confidence      }"
+      "{ opencl         | false                                     | enable OpenCL }"
+      "{ scale_factor   | 1.0                                       | pre-scaling of video/images }"
 ;
+
+std::vector<String> readClassNames(String filename);
 
 int main(int argc, char** argv)
 {
     CommandLineParser parser(argc, argv, params);
-    parser.about("This sample uses MobileNet Single-Shot Detector "
-                 "(https://arxiv.org/abs/1704.04861) "
-                 "to detect objects on camera/video/image.\n"
+    parser.about("This sample uses Inception-v2 SSD.\n"
                  ".caffemodel model's file is available here: "
-                 "https://github.com/chuanqi305/MobileNet-SSD\n"
-                 "Default network is 300x300 and 20-classes VOC.\n");
+                 "https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API\n"
+                 "Default network is 300x300 on COCO dataset.\n");
 
     if (parser.get<bool>("help") || argc == 1)
     {
@@ -50,12 +44,16 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    String modelConfiguration = parser.get<String>("proto");
-    String modelBinary = parser.get<String>("model");
-    CV_Assert(!modelConfiguration.empty() && !modelBinary.empty());
+    String modelConfiguration = parser.get<String>("config");
+    String modelWeights = parser.get<String>("weight");
+    String modelLabels = parser.get<String>("labels");
+    CV_Assert(!modelConfiguration.empty() && !modelWeights.empty() && !modelLabels.empty());
+
+    std::vector<String> classNames = readClassNames(modelLabels);
+    CV_Assert(classNames.size() > 0);
 
     //! [Initialize network]
-    dnn::Net net = readNetFromCaffe(modelConfiguration, modelBinary);
+    dnn::Net net = readNetFromTensorflow(modelConfiguration, modelWeights);
     //! [Initialize network]
 
     if (parser.get<bool>("opencl"))
@@ -66,10 +64,10 @@ int main(int argc, char** argv)
     if (net.empty())
     {
         cerr << "Can't load network by using the following files: " << endl;
-        cerr << "prototxt:   " << modelConfiguration << endl;
-        cerr << "caffemodel: " << modelBinary << endl;
+        cerr << "pbtxt: " << modelConfiguration << endl;
+        cerr << "pb:    " << modelWeights << endl;
         cerr << "Models can be downloaded here:" << endl;
-        cerr << "https://github.com/chuanqi305/MobileNet-SSD" << endl;
+        cerr << "https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API" << endl;
         exit(-1);
     }
     
@@ -129,10 +127,10 @@ int main(int argc, char** argv)
         resize(frame, frame, Size(), scale_factor, scale_factor, cv::INTER_NEAREST);
         
         //! [Prepare blob]
-        Mat inputBlob = blobFromImage(frame, inScaleFactor,
+        Mat inputBlob = blobFromImage(frame, 1.0f / meanVal,
                                       Size(inWidth, inHeight),
                                       Scalar(meanVal, meanVal, meanVal),
-                                      false, false); //Convert Mat to batch of images
+                                      true, false); //Convert Mat to batch of images
         //! [Prepare blob]
 
         //! [Set input blob]
@@ -194,3 +192,27 @@ int main(int argc, char** argv)
     return 0;
 } // main
 
+
+
+std::vector<String> readClassNames(String filename)
+{
+    std::vector<String> classNames;
+
+    std::ifstream fp(filename);
+    if (!fp.is_open())
+    {
+        std::cerr << "File with classes labels not found: " << filename << std::endl;
+        exit(-1);
+    }
+
+    std::string name;
+    while (!fp.eof())
+    {
+        std::getline(fp, name);
+        if (name.length())
+            classNames.push_back( name );
+    }
+
+    fp.close();
+    return classNames;
+}

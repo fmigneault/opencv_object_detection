@@ -1,3 +1,5 @@
+#include "jetson_tegra_gstreamer_camera.hpp"
+
 #include <opencv2/dnn.hpp>
 #include <opencv2/dnn/shape_utils.hpp>
 #include <opencv2/imgproc.hpp>
@@ -26,10 +28,11 @@ const char* params
     = "{ help           | false | print usage         }"
       "{ proto          | MobileNetSSD_deploy.prototxt | model configuration }"
       "{ model          | MobileNetSSD_deploy.caffemodel | model weights }"
-      "{ camera_device  | 0     | camera device number }"
-      "{ video          |       | video or image for detection}"
+      "{ stream_width   | 800   | camera video stream width }"
+      "{ stream_height  | 600   | camera video stream height }"
+      "{ stream_fps     | 30    | camera video stream fps }"
       "{ out            |       | path to output video file}"
-      "{ min_confidence | 0.2   | min confidence }"
+      "{ min_confidence | 0.2   | min confidence      }"
       "{ opencl         | false | enable OpenCL }"
       "{ scale_factor   | 1.0   | pre-scaling of video/images }"
 ;
@@ -76,40 +79,28 @@ int main(int argc, char** argv)
     double scale_factor = parser.get<double>("scale_factor");
     String display_title = "MobileNet-SSD: Detections";
     namedWindow(display_title, WINDOW_NORMAL | WINDOW_FREERATIO | CV_GUI_EXPANDED);
-    resizeWindow(display_title, 800, 600);
-
-    VideoCapture cap;
-    if (!parser.has("video"))
-    {
-        int cameraDevice = parser.get<int>("camera_device");
-        cap = VideoCapture(cameraDevice);
-        if(!cap.isOpened())
-        {
-            cout << "Couldn't find camera: " << cameraDevice << endl;
-            return -1;
-        }
-    }
-    else
-    {
-        cap.open(parser.get<String>("video"));
-        if(!cap.isOpened())
-        {
-            cout << "Couldn't open image or video: " << parser.get<String>("video") << endl;
-            return -1;
-        }
+    
+    int stream_w = parser.get<int>("stream_width");
+    int stream_h = parser.get<int>("stream_height");
+    int stream_fps = parser.get<int>("stream_fps");    
+    resizeWindow(display_title, stream_w, stream_h);
+    
+    std::string pipeline = get_tegra_pipeline(stream_w, stream_h, stream_fps);
+    std::cout << "Using pipeline: \n\t" << pipeline << "\n";
+    cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
+    if (!cap.isOpened()) {
+        std::cout << "Connection to gstreamer pipeline failed" << std::endl;
+        return -1;
     }
 
-    //Acquire input size
-    Size inVideoSize((int) cap.get(CV_CAP_PROP_FRAME_WIDTH),
-                     (int) cap.get(CV_CAP_PROP_FRAME_HEIGHT));
-
-    double fps = cap.get(CV_CAP_PROP_FPS);
-    int fourcc = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
     VideoWriter outputVideo;
     if (!parser.get<String>("out").empty()) {
+        double out_fps = cap.get(CV_CAP_PROP_FPS);
+        int fourcc = static_cast<int>(cap.get(CV_CAP_PROP_FOURCC));
+        Size inVideoSize((int) cap.get(CV_CAP_PROP_FRAME_WIDTH), (int) cap.get(CV_CAP_PROP_FRAME_HEIGHT));
         outputVideo.open(parser.get<String>("out") ,
                          (fourcc != 0 ? fourcc : VideoWriter::fourcc('M','J','P','G')),
-                         (fps != 0 ? fps : 10.0), inVideoSize, true);
+                         (out_fps != 0 ? out_fps : 10.0), inVideoSize, true);
     }
     
     for(;;)
