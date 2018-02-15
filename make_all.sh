@@ -8,7 +8,9 @@ programs="
     inception_opencv 
     ssd_inception_opencv 
     ssd_mobilenet_opencv 
-    ssd_opencv yolo_opencv
+    ssd_mobilenet_jtgc 
+    ssd_opencv 
+    yolo_opencv
 "
 
 for prog in $programs
