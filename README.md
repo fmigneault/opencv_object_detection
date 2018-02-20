@@ -1,6 +1,23 @@
 # opencv_object_detection
 OpenCV samples for CNN object detection
 
+## Installation
+
+Clone the repository and use the provided `make_all.sh` script to compile C++ codes.  
+The script will install compiled samples in `./install` of the repository clone directory.  
+
+```
+git clone https://github.com/fmigneault/opencv_object_detection
+cd opencv_object_detection
+sh make_all.sh
+```
+
+Then, launch the desired sample with the corresponding `sh` file.
+
+*__Notes__*  
+* Some paths might require editing in the `sh` files to specify input image or model location on your machine.
+* Model files of various CNN should be acquired on their respective original source.
+
 ## Samples
 
 * **faster_rcnn_opencv_sample** [TODO]  
